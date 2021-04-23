@@ -29,7 +29,7 @@ def is_partial(cls) -> bool:
   """Returns True if this is a partial class, e.g. "~list"."""
   if isinstance(cls, str):
     return cls.startswith(PARTIAL)
-  elif hasattr(cls, "name"):
+  elif hasattr(cls, "name") and cls.name is not None:
     return cls.name.startswith(PARTIAL)
   else:
     return False
