@@ -354,12 +354,10 @@ class PytypeRunner:
     # relpath() prevents possibly sensitive directory info from appearing in
     # ninja's "Entering directory" message.
     c = os.path.relpath(os.path.dirname(self.ninja_file))
-    command = _get_executable('ninja') + [
-        '-k', k, '-C', c, '-j', str(self.jobs)]
+    command = ['ninja', '--quiet', '-k', k, '-C', c, '-j', str(self.jobs)]
     if logging.getLogger().isEnabledFor(logging.INFO):
       command.append('-v')
     ret = subprocess.call(command)
-    print('Leaving directory %r' % c)
     return ret
 
   def run(self):
