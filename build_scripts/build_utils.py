@@ -208,10 +208,9 @@ def run_ninja(targets, fail_collector=None, fail_fast=False, verbose=False):
   Returns:
     True if no target fails. False, otherwise.
   """
-  # The -k option to ninja, set to a very high value, makes it run until it
-  # detects all failures. So, we set it to a high value unless |fail_fast| is
-  # True.
-  cmd = ["ninja", "-k", "1" if fail_fast else "100000"] + targets
+  # The -k option to ninja, set to zero, makes it run until it detects all
+  # failures. So, we set it to zero unless |fail_fast| is True.
+  cmd = ["ninja", "--quiet", "-k", "1" if fail_fast else "0"] + targets
   with subprocess.Popen(
       cmd, cwd=OUT_DIR,
       stdout=subprocess.PIPE, stderr=subprocess.STDOUT) as process:
