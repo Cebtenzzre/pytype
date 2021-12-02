@@ -30,6 +30,8 @@ class PrintVisitor(base_visitor.Visitor):
     self.in_literal = False
     self.in_constant = False
     self.in_signature = False
+    self.in_union_depth = 0
+    self.in_generic_depth = 0
     self.multiline_args = multiline_args
 
     self._unit = None
@@ -238,6 +240,8 @@ class PrintVisitor(base_visitor.Visitor):
       self._typing_import_counts["Any"] -= 1
     if self._DropTypingConstant(node):
       return "<deleted>"
+    if isinstance(node.type, pytd.GenericType):
+      return f"{node.name} = {node.type.element_type}"
     # Whether the constant has a default value is important for fields in
     # generated classes like namedtuples.
     suffix = " = ..." if node.value else ""
@@ -575,9 +579,20 @@ class PrintVisitor(base_visitor.Visitor):
     else:
       return name
 
+  def EnterGenericType(self, _):
+    self.in_generic_depth += 1
+
+  def LeaveGenericType(self, _):
+    self.in_generic_depth -= 1
+
   def VisitGenericType(self, node):
     """Convert a generic type to a string."""
     parameters = node.parameters
+    if (
+      self.in_constant and not (self.in_union_depth or self.in_generic_depth > 1)
+      and node.base_type == 'type' and len(parameters) == 1
+    ):
+      return node
     if self._IsEmptyTuple(node):
       parameters = ("()",)
     elif self._NeedsTupleEllipsis(node):
@@ -596,6 +611,12 @@ class PrintVisitor(base_visitor.Visitor):
 
   def VisitTupleType(self, node):
     return self.VisitGenericType(node)
+
+  def EnterUnionType(self, _):
+    self.in_union_depth += 1
+
+  def LeaveUnionType(self, _):
+    self.in_union_depth -= 1
 
   def VisitUnionType(self, node):
     """Convert a union type ("x or y") to a string."""
