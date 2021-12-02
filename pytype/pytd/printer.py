@@ -214,6 +214,8 @@ class PrintVisitor(base_visitor.Visitor):
       assert module == "builtins", module
       assert name in ("True", "False"), name
       return name
+    if isinstance(node.type, pytd.GenericType):
+      return f"{node.name} = {node.type.parameters[0]}"
     return f"{node.name}: {node.type}"
 
   def EnterAlias(self, _):
@@ -542,6 +544,8 @@ class PrintVisitor(base_visitor.Visitor):
   def VisitGenericType(self, node):
     """Convert a generic type to a string."""
     parameters = node.parameters
+    if self.in_constant and node.base_type == 'type':
+      return node
     if self._IsEmptyTuple(node):
       parameters = ("()",)
     elif self._NeedsTupleEllipsis(node):
