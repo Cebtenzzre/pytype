@@ -68,6 +68,9 @@ ITEMS = {
     'python_version': Item(
         '', '{}.{}'.format(*sys.version_info[:2]),
         None, 'Python version (major.minor) of the target code.'),
+    'python_version_imports': Item(
+        '', '{}.{}'.format(*sys.version_info[:2]),
+        None, 'Python version (major.minor) to use for imports.'),
 }
 
 
@@ -128,6 +131,7 @@ def make_converters(cwd=None):
       'output': lambda v: file_utils.expand_path(v, cwd),
       'platform': get_platform,
       'python_version': get_python_version,
+      'python_version_imports': get_python_version,
       'pythonpath': lambda v: file_utils.expand_pythonpath(v, cwd),
       'disable': concat_disabled_rules,
   }

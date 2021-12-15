@@ -56,6 +56,10 @@ def make_parser():
       dest="python_version", default=None,
       help=("Python version to target (\"major.minor\", e.g. \"3.7\")"))
   o.add_argument(
+      "-I", "--python_version_imports", type=str, action="store",
+      dest="python_version_imports", default=None,
+      help=("Python version for imports (\"major.minor\", e.g. \"3.7\")"))
+  o.add_argument(
       "--multiline-args", action="store_true",
       dest="multiline_args", default=False,
       help="Print function arguments one to a line.")

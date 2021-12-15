@@ -117,7 +117,8 @@ def make_parser():
                           'metavar': 'N'}),
       (('--platform',),),
       (('-P', '--pythonpath'),),
-      (('-V', '--python-version'),)
+      (('-V', '--python-version'),),
+      (('-I', '--python-version-imports'),),
   ]:
     _add_file_argument(parser, types, *option)
   output = parser.add_mutually_exclusive_group()

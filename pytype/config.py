@@ -146,6 +146,10 @@ def add_basic_options(o):
       "--platform", type=str, action="store", dest="platform",
       default=sys.platform,
       help='Platform to emulate (e.g., "linux", "win32").')
+  o.add_argument(
+      "-I", "--python_version_imports", type=str, action="store",
+      dest="python_version_imports", default=None,
+      help=("Python version for imports (\"major.minor\", e.g. \"3.7\")"))
 
 
 FEATURE_FLAGS = [
